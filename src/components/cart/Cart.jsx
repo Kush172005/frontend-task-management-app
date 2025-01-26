@@ -45,13 +45,16 @@ export default function Cart() {
                                     alt={item.name}
                                     className="w-16 h-16 object-cover rounded-md mr-4"
                                 />
-                                <span className="text-lg font-medium text-gray-900">
-                                    {item.name} (x{item.quantity})
-                                </span>
+                                <div className="flex flex-col gap-2">
+                                    <span className="text-lg font-medium text-gray-900">
+                                        {item.name} (x{item.quantity})
+                                    </span>
+                                    <div>₹{item.price}</div>
+                                </div>
                             </div>
                             <div className="flex items-center flex-col gap-2 ">
                                 <span className="text-lg font-bold text-indigo-600">
-                                    ₹{item.price}
+                                    ₹{item.price * item.quantity}
                                 </span>
                                 <button
                                     onClick={() => handleCartItemDelete(index)}

@@ -12,10 +12,26 @@ export default function Order() {
         setItems(cart);
     }, []);
 
-    const total = items.reduce((sum, item) => sum + item.price, 0);
+    const total = items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
 
     const handlePlaceOrder = () => {
         setOrderPlaced(true);
+
+        const orderHistory = JSON.parse(
+            localStorage.getItem("orderHistory") || "[]"
+        );
+
+        orderHistory.push({
+            items,
+            total,
+            date: new Date().toLocaleString(),
+        });
+
+        localStorage.setItem("orderHistory", JSON.stringify(orderHistory));
+
         localStorage.removeItem("cart");
     };
 
@@ -47,7 +63,7 @@ export default function Order() {
                                             {item.name}
                                         </span>
                                         <span className="font-medium text-indigo-600">
-                                            ${item.price.toFixed(2)}
+                                            ₹{item.price * item.quantity}
                                         </span>
                                     </div>
                                 ))}
@@ -57,7 +73,7 @@ export default function Order() {
                                             Total:
                                         </span>
                                         <span className="text-xl text-indigo-600">
-                                            ${total.toFixed(2)}
+                                            ₹{total}
                                         </span>
                                     </div>
                                 </div>

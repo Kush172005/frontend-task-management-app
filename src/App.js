@@ -4,6 +4,7 @@ import Login from "./components/auth/Login";
 import Menu from "./components/menu/Menu";
 import Cart from "./components/cart/Cart";
 import Order from "./components/order/Order";
+import OrderHistory from "./components/order/OrderHistory";
 
 const ProtectedRoute = ({ children }) => {
     return JSON.parse(localStorage.getItem("isLoggedIn")) ? children : <Navigate to="/login" replace />;
@@ -21,6 +22,7 @@ export default function App() {
                 <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                 <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
                 <Route path="/order" element={<ProtectedRoute><Order /></ProtectedRoute>} />
+                <Route path="/orderHistory" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
             </Routes>
         </Router>
     );

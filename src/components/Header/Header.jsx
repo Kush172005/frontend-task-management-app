@@ -26,32 +26,32 @@ const Header = () => {
                                     alt="Craft My Plate"
                                 />
                             </div>
-                            <span className="text-3xl font-serif">
+                            <span className="text-3xl font-serif max-md:hidden">
                                 Craft My Plate
                             </span>
                         </div>
-                        <div className="flex space-x-6 items-center">
+                        <div className="flex space-x-6 items-center md:text-lg md:font-medium">
                             <Link
                                 to="/"
-                                className="text-lg font-medium text-gray-700 hover:text-indigo-600 transition duration-200"
+                                className=" text-gray-700 hover:text-indigo-600 transition duration-200"
                             >
                                 Menu
                             </Link>
                             <Link
                                 to="/cart"
-                                className="text-lg font-medium text-gray-700 hover:text-indigo-600 transition duration-200"
+                                className=" text-gray-700 hover:text-indigo-600 transition duration-200"
                             >
                                 Cart
                             </Link>
                             <Link
-                                to="/order"
-                                className="text-lg font-medium text-gray-700 hover:text-indigo-600 transition duration-200"
+                                to="/orderHistory"
+                                className=" text-gray-700 hover:text-indigo-600 transition duration-200"
                             >
-                                Order
+                                My Orders
                             </Link>
                             <button
                                 onClick={handleLogout}
-                                className="text-lg font-medium text-white bg-red-500 px-3 py-1 rounded-lg hover:bg-red-600 transition duration-200"
+                                className=" text-white bg-red-500 px-3 py-1 rounded-lg hover:bg-red-600 transition duration-200"
                             >
                                 Logout
                             </button>

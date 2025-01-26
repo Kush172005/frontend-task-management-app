@@ -1,13 +1,32 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import Header from "../Header/Header";
-import initialMenuItems from "./menuItems";
 
 export default function Menu() {
-    const [menuItems, setMenuItems] = useState(initialMenuItems);
+    const [menuItems, setMenuItems] = useState([]);
     const [newItem, setNewItem] = useState({ name: "", price: "", image: "" });
     const [searchQuery, setSearchQuery] = useState("");
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMenuItems = async () => {
+            try {
+                const response = await fetch(
+                    "https://craftmyplate-backend-rjc0.onrender.com/api/menu"
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    setMenuItems(data);
+                    setLoading(false);
+                } else {
+                    console.error("Failed to fetch menu items");
+                }
+            } catch (error) {
+                console.error("Error fetching menu items:", error);
+            }
+        };
+
+        fetchMenuItems();
+    }, []);
 
     const handleAddToCart = (item) => {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -15,12 +34,15 @@ export default function Menu() {
 
         if (existingItem) {
             existingItem.quantity += 1;
+            alert(
+                `Your ${existingItem.name} has been successfully added to the cart.`
+            );
         } else {
             cart.push({ ...item, quantity: 1 });
+            alert(`Your ${item.name} has been successfully added to the cart.`);
         }
 
         localStorage.setItem("cart", JSON.stringify(cart));
-        navigate("/cart");
     };
 
     const handleAddItem = () => {
@@ -55,45 +77,56 @@ export default function Menu() {
                         className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredMenuItems.map((item) => (
-                        <div
-                            key={item.id}
-                            className="bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden transition transform hover:-translate-y-1"
-                        >
-                            <img
-                                src={item.image || "/placeholder.svg"}
-                                alt={item.name}
-                                className="w-full h-48 object-cover"
-                            />
-                            <div className="p-6">
-                                <h3 className="text-xl font-semibold text-gray-900">
-                                    {item.name}
-                                </h3>
-                                <p className="text-lg text-indigo-600 font-bold mt-2">
-                                    ₹{item.price}
-                                </p>
-                                <div className="mt-4 flex justify-between">
-                                    <button
-                                        onClick={() => handleAddToCart(item)}
-                                        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-300"
-                                    >
-                                        Add to Cart
-                                    </button>
-                                    <button
-                                        onClick={() =>
-                                            handleDeleteItem(item.id)
-                                        }
-                                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
-                                    >
-                                        Delete
-                                    </button>
+                {loading ? (
+                    <div className="flex justify-center items-center space-x-2">
+                        <div className="w-8 h-8 border-4 border-t-4 border-indigo-500 rounded-full animate-spin border-r-transparent"></div>
+                        <span className="text-lg font-semibold text-gray-700">
+                            Loading... Render is warming up! ⏳ Please give it a
+                            moment! 😅
+                        </span>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filteredMenuItems.map((item) => (
+                            <div
+                                key={item.id}
+                                className="bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden transition transform hover:-translate-y-1"
+                            >
+                                <img
+                                    src={item.image || "/placeholder.svg"}
+                                    alt={item.name}
+                                    className="w-full h-48 object-cover"
+                                />
+                                <div className="p-6">
+                                    <h3 className="text-xl font-semibold text-gray-900">
+                                        {item.name}
+                                    </h3>
+                                    <p className="text-lg text-indigo-600 font-bold mt-2">
+                                        ₹{item.price}
+                                    </p>
+                                    <div className="mt-4 flex justify-between">
+                                        <button
+                                            onClick={() =>
+                                                handleAddToCart(item)
+                                            }
+                                            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-300"
+                                        >
+                                            Add to Cart
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteItem(item.id)
+                                            }
+                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
 
                 <div className="mt-12 bg-white p-8 rounded-lg shadow-lg">
                     <h3 className="text-2xl font-semibold text-gray-800 mb-4">
